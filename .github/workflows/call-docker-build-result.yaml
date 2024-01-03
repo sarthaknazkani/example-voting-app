@@ -1,6 +1,5 @@
 name: Build Result
 # template source: https://github.com/dockersamples/.github/blob/main/templates/call-docker-build.yaml
-
 on:
   # we want pull requests so we can build(test) but not push to image registry
   push:
