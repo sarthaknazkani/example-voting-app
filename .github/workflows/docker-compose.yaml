@@ -13,5 +13,4 @@ jobs:
 
     - name: Build and Run Docker Compose
       run: |
-         
         docker-compose -f ./docker-compose.images.yml up 
