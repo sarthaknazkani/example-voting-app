@@ -1,0 +1,35 @@
+name: Docker Build and Push Worker Service
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push-worker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Create runsha version
+      id: runsha
+      run: |
+        short_sha=`echo $GITHUB_SHA | cut -c1-6`
+        echo "::set-output name=runsha::$GITHUB_RUN_NUMBER-$short_sha"
+      shell: bash
+
+
+    - name: Login to DockerHub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+
+    - name: Build and Push WORKER Image
+      run: |
+
+        cd ./worker/
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/workersample:${{ steps.runsha.outputs.runsha }} .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workersample:${{ steps.runsha.outputs.runsha }}
+
+    - name: Logout from DockerHub
+      run: docker logout
+
