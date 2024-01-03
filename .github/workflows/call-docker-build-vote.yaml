@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'feature/test'
     # only build when important files change
     paths:
       - 'vote/**'
