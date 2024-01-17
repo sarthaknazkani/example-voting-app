@@ -1,0 +1,33 @@
+name: Docker Build and Result Result Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag
+        type: string
+        required: true
+
+jobs:
+  build-and-push-result:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+
+    - name: Login to DockerHub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+
+    - name: Build and Push RESULT Image
+      run: |
+
+        cd ./result/
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/resultsample:${{ inputs.tag }} .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/resultsample:${{ inputs.tag }}
+
+    - name: Logout from DockerHub
+      run: docker logout
+

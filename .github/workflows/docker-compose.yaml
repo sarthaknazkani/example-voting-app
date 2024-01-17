@@ -1,0 +1,16 @@
+name: Docker Compose Up
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Build and Run Docker Compose
+      run: |
+        docker-compose -f ./docker-compose.images.yml up 

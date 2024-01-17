@@ -1,0 +1,33 @@
+name: Docker Build and Push Worker Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag
+        type: string
+        required: true
+        
+jobs:
+  build-and-push-worker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+
+    - name: Login to DockerHub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+
+    - name: Build and Push WORKER Image
+      run: |
+
+        cd ./worker/
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/workersample:${{ inputs.tag }} .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workersample:${{ inputs.tag }}
+
+    - name: Logout from DockerHub
+      run: docker logout
+
