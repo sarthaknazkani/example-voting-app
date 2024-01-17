@@ -1,4 +1,4 @@
-name: Docker Build and Result Voting Service
+name: Docker Build and Result Result Service
 
 on:
   workflow_dispatch:
