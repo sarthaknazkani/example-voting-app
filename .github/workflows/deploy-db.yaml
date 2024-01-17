@@ -32,6 +32,9 @@ jobs:
           helm package . --version v0.1
           until (echo $TOKEN | helm registry login ${{ env.DOCKER_REGISTRY }} -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin ); do echo "Dockerhub login" && sleep 10; done
 
+      - name: Login to DockerHub
+        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
       - name: Push Chart to Dockerhub
         working-directory: ./_k8s
         run: |
