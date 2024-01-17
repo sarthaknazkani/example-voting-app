@@ -30,7 +30,7 @@ jobs:
           until (echo $TOKEN | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin ); do echo "Dockerhub login" && sleep 10; done
 
       - name: Login to DockerHub  
-          run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin 
+        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin 
 
       - name: Push Chart to Dockerhub
         working-directory: ./_k8s
