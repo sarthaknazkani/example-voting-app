@@ -1,0 +1,74 @@
+replicaCount: 1
+
+image: postgres:15-alpine
+
+serviceAccount:
+  # Specifies whether a service account should be created or not 
+  create: true
+
+runAsUser: 1000
+
+# # claim the user node pool for deployment
+# nodeSelector:
+#   kubernetes.azure.com/mode: user
+
+# config Map individual key/value pairs
+configMap:
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+
+rbac:
+  enabled: true
+  roles:
+  - apiGroups: [""]
+    resources: ["pods", "nodes", "configmaps", "endpoints", "namespaces", "services", "events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["create", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+
+
+# Describes the Azure Managed AAD Pod Identity
+azureIdentity:
+  name: "db-azureidentity"
+  type: 0
+  configmap:
+    name: aks-kv-sp-identity
+    namespace: default
+    clientid: aks-kv-sp-client-id
+    resourceid: aks-kv-sp-resource-id
+
+# Describes the identity binding relationship between an AzureIdentity and a pod with a specific selector as part of its label
+azureIdentityBinding:
+  name: "db-azureidentitybinding"
+  selector: "db-selector"
+
+# resource management for pods
+resources:
+  limits:
+    cpu: 1000m
+    memory: 3000Mi
+  requests:
+    cpu: 300m
+    memory: 1000Mi
+
+deployment:
+  containerPort: 5432
+
+volumes:
+  - name: db-data
+    emptyDir: {} 
+
+volumeMounts:
+  - name: db-data
+    mountPath: /var/lib/postgresql/data
+
+service:
+  type: ClusterIP
+  port: 5432

@@ -1,0 +1,69 @@
+replicaCount: 1
+
+image: redis:alpine
+
+serviceAccount:
+  # Specifies whether a service account should be created or not 
+  create: true
+
+runAsUser: 1000
+
+# # claim the user node pool for deployment
+# nodeSelector:
+#   kubernetes.azure.com/mode: user
+
+rbac:
+  enabled: true
+  roles:
+  - apiGroups: [""]
+    resources: ["pods", "nodes", "configmaps", "endpoints", "namespaces", "services", "events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["create", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+
+
+# Describes the Azure Managed AAD Pod Identity
+azureIdentity:
+  name: "redis-azureidentity"
+  type: 0
+  configmap:
+    name: aks-kv-sp-identity
+    namespace: default
+    clientid: aks-kv-sp-client-id
+    resourceid: aks-kv-sp-resource-id
+
+# Describes the identity binding relationship between an AzureIdentity and a pod with a specific selector as part of its label
+azureIdentityBinding:
+  name: "redis-azureidentitybinding"
+  selector: "redis-selector"
+
+# resource management for pods
+resources:
+  limits:
+    cpu: 1000m
+    memory: 3000Mi
+  requests:
+    cpu: 300m
+    memory: 1000Mi
+
+deployment:
+  containerPort: 6379
+
+volumes:
+  - name: redis-data
+    emptyDir: {} 
+
+volumeMounts:
+  - name: redis-data
+    mountPath: /data
+
+service:
+  type: ClusterIP
+  port: 6379

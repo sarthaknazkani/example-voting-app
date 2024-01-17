@@ -1,0 +1,29 @@
+{{- if not (empty .Values.azureIdentity) }}
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: "aadpodidentity.k8s.io/v1"
+    kind: AzureIdentity
+    metadata:
+      annotations:
+        aadpodidentity.k8s.io/Behavior: namespaced
+      name: {{ .Values.azureIdentity.name }}
+      namespace: {{ .Release.Namespace }}
+    spec:
+      type: {{ .Values.azureIdentity.type }}
+      {{- $configmap := lookup "v1" "ConfigMap" .Values.azureIdentity.configmap.namespace .Values.azureIdentity.configmap.name }}
+      {{- if $configmap }}
+      {{- $resourceid := get $configmap.data .Values.azureIdentity.configmap.resourceid }}
+      {{- $clientid := get $configmap.data .Values.azureIdentity.configmap.clientid }}
+      resourceID: {{ $resourceid | default "none" }}
+      clientID: {{ $clientid | default "none" }}
+      {{- end }}
+  - apiVersion: "aadpodidentity.k8s.io/v1"
+    kind: AzureIdentityBinding
+    metadata:
+      name: {{ .Values.azureIdentityBinding.name }}
+      namespace: {{ .Release.Namespace }}
+    spec:
+      azureIdentity: {{ .Values.azureIdentity.name }}
+      selector: {{ .Values.azureIdentityBinding.selector }}
+{{- end}}
