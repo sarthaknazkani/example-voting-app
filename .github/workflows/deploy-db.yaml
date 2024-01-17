@@ -1,0 +1,42 @@
+name: Deploy DB
+run-name: Deployment 🚀 on branch ${{ github.head_ref || github.ref_name }} by @${{ github.actor }}
+on:
+  workflow_dispatch:
+
+jobs:
+
+  deploy-db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update helm chart
+        env:
+          GCR_IMAGE: ghcr.io/${{ github.repository_owner }}
+          TOKEN: ${{ inputs.github-token }}
+        working-directory: ./_k8s
+        run: |
+          until (echo $TOKEN | helm registry login ${{ env.GCR_IMAGE }} --username ${{ github.repository_owner }} --password-stdin ); do echo "helm login issue, retrying in 10 sec" && sleep 10; done
+          helm dependency update
+          helm registry logout ${{ env.GCR_IMAGE }}
+        shell: bash
+
+      # - uses: azure/login@v1
+      #   with:
+      #     creds: ${{ inputs.creds }}
+
+      # - name: Save and publish  chart to ACR
+      #   working-directory: ./${{ inputs.helm-directory }}
+      #   run: |
+      #     echo folder content
+      #     ls -l
+      #     sed -i "s/latest/${{ inputs.image-tag }}/" values*.yaml
+      #     helm package . --version ${{ inputs.image-tag }}
+      #     helm push ${{ inputs.image-name }}-${{ inputs.image-tag }}.tgz oci://${{inputs.container-registry}}/helm
+      #   shell: bash
+
+
+      # - name: Azure - Login
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
