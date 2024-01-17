@@ -32,6 +32,6 @@ jobs:
       - name: Push Chart to Dockerhub
         working-directory: ./_k8s
         run: |
-          echo ${{ secrets.GH_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin 
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin 
           helm push tta-v0.1.tgz oci://registry-1.docker.io/sarthaknazkani
         shell: bash
