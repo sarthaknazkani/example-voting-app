@@ -23,14 +23,13 @@ jobs:
 
       - name: Save chart
         env:
-          DOCKER_REGISTRY: registry-1.docker.io
+          DOCKER_REGISTRY: docker://sarthaknazkani/helm
           TOKEN: ${{ secrets.GH_TOKEN }}
         working-directory: ./_k8s
         run: |
           echo folder content
           ls -l
           helm package . --version v0.1
-          until (echo $TOKEN | helm registry login ${{ env.DOCKER_REGISTRY }} -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin ); do echo "Dockerhub login" && sleep 10; done
 
       - name: Login to DockerHub
         run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
