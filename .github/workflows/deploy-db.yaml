@@ -28,11 +28,10 @@ jobs:
           ls -l
           helm package . --version v0.1
 
-      - name: Login to DockerHub
-        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Push Chart to Dockerhub
         working-directory: ./_k8s
         run: |
-          helm push tta-v0.1.tgz docker://sarthaknazkani/helm
+          echo ${{ secrets.GH_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin 
+          helm push tta-v0.1.tgz oci://registry-1.docker.io/sarthaknazkani
         shell: bash
