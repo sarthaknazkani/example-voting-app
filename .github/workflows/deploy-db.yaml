@@ -13,7 +13,7 @@ jobs:
       - name: Update helm chart
         env:
           GCR_IMAGE: ghcr.io/${{ github.repository_owner }}
-          TOKEN: ${{ inputs.github-token }}
+          TOKEN: ${{ secrets.GH_TOKEN }}
         working-directory: ./_k8s
         run: |
           until (echo $TOKEN | helm registry login ${{ env.GCR_IMAGE }} --username ${{ github.repository_owner }} --password-stdin ); do echo "helm login issue, retrying in 10 sec" && sleep 10; done
