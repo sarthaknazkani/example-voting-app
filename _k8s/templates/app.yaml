@@ -11,9 +11,3 @@
 {{- include "shared-lib.service" . }}
 ---
 {{- include "shared-lib.secretproviderclass" . }}
----
-{{- include "shared-lib.ingress-internal" . }}
----
-{{- include "shared-lib.hpa" . }}
----
-{{- include "shared-lib.podDisruptionBudget" . }}
