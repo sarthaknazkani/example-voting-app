@@ -50,7 +50,7 @@ jobs:
 
       - name: Display k8s manifests via helm template
         run: |
-          helm pull oci://registry-1.docker.io/sarthaknazkani/tta --version v0.1d ./charts --untar
+          helm pull oci://registry-1.docker.io/sarthaknazkani/tta --version v0.1 -d ./charts --untar
           helm template tta ./charts/threetierapp \
           -f <(cat ./charts/threetierapp/values.yaml 2>/dev/null) \
           -f ./charts/threetierapp/values-*.yaml \
