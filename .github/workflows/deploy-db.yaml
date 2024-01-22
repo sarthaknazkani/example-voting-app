@@ -52,6 +52,8 @@ jobs:
         run: |
           helm pull oci://registry-1.docker.io/sarthaknazkani/tta --version v0.1 -d ./charts --untar
           ls -la
+          cd charts
+          ls
           helm template tta ./charts/tta \
           -f <(cat ./charts/tta/values.yaml 2>/dev/null) \
           -f ./charts/tta/values-*.yaml \
