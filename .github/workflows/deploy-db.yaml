@@ -56,7 +56,7 @@ jobs:
           ls
           cd ..
           helm template tta ./charts/tta \
-          -f <(cat ./charts/tta/values-*.yaml 2>/dev/null) \
+          -f <(cat ./charts/tta/values-db.yaml 2>/dev/null) \
           -f <(echo "${{ inputs.values }}") --debug \
         shell: bash
 
