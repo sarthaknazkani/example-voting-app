@@ -57,7 +57,7 @@ jobs:
           cd ..
           helm template tta ./charts/tta \
           -f <(cat ./charts/tta/values-*.yaml 2>/dev/null) \
-          -f <(echo "${{ inputs.values }}") \
+          -f <(echo "${{ inputs.values }}") --debug \
         shell: bash
 
         # - name: Deploy via helm upgrade
