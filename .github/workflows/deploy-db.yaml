@@ -54,8 +54,9 @@ jobs:
           ls -la
           cd charts
           ls
-          helm template charts/tta \
-          -f <(cat charts/tta/values.yaml 2>/dev/null) \
+          cd ..
+          helm template tta ./charts/tta \
+          -f <(cat ./charts/tta/values.yaml 2>/dev/null) \
           -f ./charts/tta/values-*.yaml \
           -f <(echo "${{ inputs.values }}") \
         shell: bash
